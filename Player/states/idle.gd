@@ -1,16 +1,41 @@
 extends "res://Player/states/state.gd"
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+export var DELAY_BEFORE_PLAYING_ANIMATION: int = 5
+
+var animationTimer: float = 0
+var animatedSprite
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-  pass # Replace with function body.
+  animatedSprite = get_node('../../AnimatedSprite')
+  pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #  pass
 
 func enter():
+  animatedSprite.frame = 0
+  animatedSprite.play('idle')
+  .enter()
+  
+func resume():
+  enter()
+  .resume()
+  
+func update(delta: float):
+  if animatedSprite.playing:
+    return
+    
+  animationTimer += delta
+  if animationTimer >= DELAY_BEFORE_PLAYING_ANIMATION:
+    animationTimer -= DELAY_BEFORE_PLAYING_ANIMATION
+    animatedSprite.play()
+    
+# TODO trouver quel est la classe des events
+func dispatch(event):
   pass
+  
+func on_animation_finished(anim_name):
+  animatedSprite.frame = 0
+  animatedSprite.stop()

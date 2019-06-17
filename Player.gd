@@ -28,7 +28,7 @@ func jump():
 func _physics_process(delta):
   # Nettoyer cette merde : les touches doivent appeler des actions
   # qui existent sous la forme de fonctions
-  if Input.is_action_pressed("ui_right"):
+  """if Input.is_action_pressed("ui_right"):
     velocity.x = SPEED
     $AnimatedSprite.play()
     $AnimatedSprite.flip_h = false
@@ -40,7 +40,7 @@ func _physics_process(delta):
     $AnimatedSprite.frame = 0
     $AnimatedSprite.stop()
     velocity.x = 0
-    
+  """  
   # TODO ajouter des air jump
   # TODO ajouter des wall jump
   # TODO ajouter un dash

@@ -7,14 +7,15 @@ var states_list = {}
 # TODO trouver comment typer ça pour que seul une State puisse aller dedans
 var states_stack = []
 var current_state = null
+var animatedSprite
 
 # Active est un setter permettant d'activer/désactiver les physics et inputs,
 # ainsi qu'init la first scène.
 var active: bool = false setget set_active#, get_active
 func set_active(value):
   active = value
-  set_physics_process(false) # Si true, _physics_process sera appelé et transmis à la current_state
-  set_process_input(false) # Si true, _input sera appelé et transmis sous la forme d'event. Noter l'inversion, c'est dégueu.
+  set_physics_process(value) # Si true, _physics_process sera appelé et transmis à la current_state
+  set_process_input(value) # Si true, _input sera appelé et transmis sous la forme d'event. Noter l'inversion, c'est dégueu.
   
   # Si on vient de d'activer la statemachine, on init. Sinon, on vide le stack et la current_state
   if value == true:
@@ -28,6 +29,9 @@ func _ready():
   for child in get_children():
     states_list[child.name] = child
     #child.connect("finished", self, "_change_state")
+  animatedSprite = get_node('../AnimatedSprite')  
+  animatedSprite.connect("animation_finished", self, "on_animation_finished", [])
+  
   set_active(true) # REMAINDER Attention, les setters et getters en godot ne sont appelé que depuis l'exterieur, on doit appeler directement le setter
 
 # On transmet les inputs à la state en cours
@@ -39,10 +43,10 @@ func _physics_process(delta):
   current_state.update(delta)
 
 # On transmet le _on_animation_finish  
-func _on_animation_finished(anim_name):
+func on_animation_finished():
   if not active:
     return
-  current_state._on_animation_finished(anim_name)
+  current_state.on_animation_finished(animatedSprite.animation)
 
 # Enfin, on change la state en cours quand on en a besoin
 func _change_state(state_name):
