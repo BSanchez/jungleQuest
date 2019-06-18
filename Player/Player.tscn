@@ -1,61 +1,62 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
-[ext_resource path="res://Player.gd" type="Script" id=1]
-[ext_resource path="res://CG pixel 4x5.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://Player/FSM.gd" type="Script" id=3]
-[ext_resource path="res://Player/states/idle.gd" type="Script" id=4]
-[ext_resource path="res://Player/Pixel Jones.png" type="Texture" id=5]
+[ext_resource path="res://Player/Player.gd" type="Script" id=1]
+[ext_resource path="res://Player/Pixel Jones.png" type="Texture" id=2]
+[ext_resource path="res://CG pixel 4x5.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://Player/FSM.gd" type="Script" id=4]
+[ext_resource path="res://Player/states/idle.gd" type="Script" id=5]
+[ext_resource path="res://Player/states/jump.gd" type="Script" id=6]
 
 [sub_resource type="AtlasTexture" id=1]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 0, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 8, 8, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=3]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 16, 8, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 24, 8, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 0, 16, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 8, 16, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 16, 16, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 0, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 8, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=10]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 16, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 24, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=12]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 32, 0, 8, 8 )
 
 [sub_resource type="AtlasTexture" id=13]
-atlas = ExtResource( 5 )
+atlas = ExtResource( 2 )
 region = Rect2( 40, 0, 8, 8 )
 
 [sub_resource type="SpriteFrames" id=14]
@@ -81,7 +82,7 @@ extents = Vector2( 1.56164, 3.69347 )
 
 [sub_resource type="DynamicFont" id=16]
 size = 5
-font_data = ExtResource( 2 )
+font_data = ExtResource( 3 )
 
 [node name="Player" type="KinematicBody2D"]
 position = Vector2( 21.6441, 68.067 )
@@ -110,14 +111,15 @@ __meta__ = {
 }
 
 [node name="FSM" type="Node" parent="."]
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 START_STATE = NodePath("idle")
 
 [node name="idle" type="Node" parent="FSM"]
-script = ExtResource( 4 )
+script = ExtResource( 5 )
 
 [node name="freefall" type="Node" parent="FSM"]
 
 [node name="jump" type="Node" parent="FSM"]
+script = ExtResource( 6 )
 
 [node name="run" type="Node" parent="FSM"]

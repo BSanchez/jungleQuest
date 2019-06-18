@@ -1,21 +1,26 @@
 # Abstract base class for states
 extends Node
 
+signal request_transition(next_state_name)
+
+func _ready():
+	owner = get_node('../..')
+
 func enter():
-  pass
-  
+	pass
+
 func resume():
-  pass
-  
+	pass
+
 func leave():
-  pass
+	pass
 
 func update(delta: float):
-  pass
-    
+	pass
+
 # TODO trouver quel est la classe des events
-func dispatch(event):
-  pass
-  
+func handle_event(event):
+	pass
+
 func on_animation_finished(anim_name):
-  pass
+	pass
