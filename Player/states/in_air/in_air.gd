@@ -10,29 +10,30 @@ var remaining_jump_time = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-  pass
+	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #  pass
 
 func enter():
-  owner.get_node('AnimatedSprite').animation = 'jump'
-  owner.get_node('AnimatedSprite').stop()
-  .enter()
+	.enter()
 
 func update(delta):
-  if owner.is_on_floor():
-    owner.velocity.y = 0
-    air_jump_count = 0
-    emit_signal('request_transition', 'run')
+	if owner.is_on_floor():
+		owner.velocity.y = 0
+		air_jump_count = 0
+		emit_signal('request_transition', 'run')
+
+
 
 func handle_event(event):
-  if event.is_action_pressed('jump') && air_jump_count < MAX_AIR_JUMP:
-    air_jump_count += 1
-    emit_signal('request_transition', 'jump')
-  .handle_event(event)
+	if event.is_action_pressed('jump') && air_jump_count < MAX_AIR_JUMP:
+		air_jump_count += 1
+		emit_signal('request_transition', 'jump')
+	.handle_event(event)
+
 func resume():
-  owner.get_node('AnimatedSprite').animation = 'jump'
-  owner.get_node('AnimatedSprite').stop()
-  owner.get_node('AnimatedSprite').frame = 1
-  .resume()
+	owner.get_node('AnimatedSprite').animation = 'jump'
+	owner.get_node('AnimatedSprite').stop()
+	owner.get_node('AnimatedSprite').frame = 1
+	.resume()
