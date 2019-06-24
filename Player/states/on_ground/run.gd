@@ -1,6 +1,6 @@
 extends "on_ground.gd"
 
-const SPEED: int = 50
+export var SPEED: int = 50
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"

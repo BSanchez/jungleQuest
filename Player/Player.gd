@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 const FLOOR: Vector2 = Vector2(0, -1)
 var velocity: Vector2 = Vector2(0, 0)
+var on_a_climbable: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,7 +14,11 @@ func _ready():
 
 func _physics_process(delta):
   move_and_slide(velocity, FLOOR)
-  # TODO ajouter des wall jump
-  # TODO ajouter un dash
-  # TODO ajouter le fait de grimper ou se freiner en glissant sur un mur
-  # TODO un stomp
+
+func _on_climbable_body_entered(body):
+  if body == self:
+    on_a_climbable = true
+
+func _on_climbable_body_exited(body):
+  if body == self:
+    on_a_climbable = false

@@ -1,118 +1,37 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Player/Player.gd" type="Script" id=1]
-[ext_resource path="res://Player/Pixel Jones.png" type="Texture" id=2]
+[ext_resource path="res://Player/Pixel Jones.json" type="SpriteFrames" id=2]
 [ext_resource path="res://CG pixel 4x5.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Player/FSM.gd" type="Script" id=4]
 [ext_resource path="res://Player/states/on_ground/idle.gd" type="Script" id=5]
-[ext_resource path="res://Player/states/in_air/fall.gd" type="Script" id=6]
+[ext_resource path="res://Player/states/in_air/slide.gd" type="Script" id=6]
 [ext_resource path="res://Player/states/in_air/jump.gd" type="Script" id=7]
-[ext_resource path="res://Player/states/on_ground/run.gd" type="Script" id=8]
-[ext_resource path="res://Player/states/in_air/slide.gd" type="Script" id=9]
+[ext_resource path="res://Player/states/in_air/fall.gd" type="Script" id=8]
+[ext_resource path="res://Player/states/on_ground/run.gd" type="Script" id=9]
+[ext_resource path="res://Player/states/climb.gd" type="Script" id=10]
 
-[sub_resource type="AtlasTexture" id=1]
-atlas = ExtResource( 2 )
-region = Rect2( 32, 8, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 2 )
-region = Rect2( 0, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=3]
-atlas = ExtResource( 2 )
-region = Rect2( 8, 8, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 2 )
-region = Rect2( 16, 8, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 2 )
-region = Rect2( 24, 8, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 2 )
-region = Rect2( 0, 16, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 2 )
-region = Rect2( 0, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=10]
-atlas = ExtResource( 2 )
-region = Rect2( 8, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 2 )
-region = Rect2( 16, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=12]
-atlas = ExtResource( 2 )
-region = Rect2( 24, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=13]
-atlas = ExtResource( 2 )
-region = Rect2( 32, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=14]
-atlas = ExtResource( 2 )
-region = Rect2( 40, 0, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 2 )
-region = Rect2( 8, 16, 8, 8 )
-
-[sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 2 )
-region = Rect2( 16, 16, 8, 8 )
-
-[sub_resource type="SpriteFrames" id=15]
-animations = [ {
-"frames": [ SubResource( 1 ) ],
-"loop": false,
-"name": "slide",
-"speed": 0.0
-}, {
-"frames": [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 4 ), SubResource( 3 ) ],
-"loop": false,
-"name": "idle",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 6 ) ],
-"loop": true,
-"name": "jump",
-"speed": 6.0
-}, {
-"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
-"loop": true,
-"name": "run",
-"speed": 8.0
-}, {
-"frames": [ SubResource( 7 ), SubResource( 8 ) ],
-"loop": true,
-"name": "fall",
-"speed": 5.0
-} ]
-
-[sub_resource type="RectangleShape2D" id=16]
+[sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 2.96253, 3.57912 )
 
-[sub_resource type="DynamicFont" id=17]
+[sub_resource type="DynamicFont" id=2]
 size = 5
 font_data = ExtResource( 3 )
 
 [node name="Player" type="KinematicBody2D"]
-position = Vector2( 21.6441, 68.067 )
 script = ExtResource( 1 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 0.15, 0.15 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 1, 0 )
-frames = SubResource( 15 )
-animation = "fall"
+frames = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0.985108, 0.420948 )
-shape = SubResource( 16 )
+shape = SubResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -123,7 +42,7 @@ margin_left = -23.0
 margin_top = -10.0
 margin_right = 27.0
 margin_bottom = -5.0
-custom_fonts/font = SubResource( 17 )
+custom_fonts/font = SubResource( 2 )
 text = "state"
 align = 1
 __meta__ = {
@@ -138,13 +57,16 @@ START_STATE = NodePath("idle")
 script = ExtResource( 5 )
 
 [node name="slide" type="Node" parent="FSM"]
-script = ExtResource( 9 )
+script = ExtResource( 6 )
 
 [node name="jump" type="Node" parent="FSM"]
 script = ExtResource( 7 )
 
 [node name="fall" type="Node" parent="FSM"]
-script = ExtResource( 6 )
+script = ExtResource( 8 )
 
 [node name="run" type="Node" parent="FSM"]
-script = ExtResource( 8 )
+script = ExtResource( 9 )
+
+[node name="climb" type="Node" parent="FSM"]
+script = ExtResource( 10 )

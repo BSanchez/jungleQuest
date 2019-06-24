@@ -10,20 +10,20 @@ export var MAX_JUMP_TIME: float = 0.1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+  pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #  pass
 
 func enter():
-	owner.get_node('AnimatedSprite').animation = 'jump'
-	owner.velocity.y = -JUMP_POWER
-	remaining_jump_time = MAX_JUMP_TIME
-	.enter()
+  owner.get_node('AnimatedSprite').animation = 'jump'
+  owner.velocity.y = -JUMP_POWER
+  remaining_jump_time = MAX_JUMP_TIME
+  .enter()
 
 func update(delta):
-	if Input.is_action_pressed('jump') && remaining_jump_time > 0:
-		remaining_jump_time -= delta
-	else:
-		emit_signal('request_transition', 'fall')
+  if Input.is_action_pressed('jump') && remaining_jump_time > 0:
+    remaining_jump_time -= delta
+  else:
+    emit_signal('request_transition', 'fall')

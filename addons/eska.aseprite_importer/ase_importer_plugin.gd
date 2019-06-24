@@ -47,131 +47,94 @@ const WARNMSG_ANIMATION_EXPORT_STRF=\
 Enable Meta: Frame Tags in Aseprite's Export Sprite Sheet dialog to export frame tags as animations"""
 
 
-const PLUGIN_NAME = "eska.aseprite_importer"
+const PLUGIN_NAME = "bsanchez.aseprite_importer"
 
 func get_importer_name():
-	return PLUGIN_NAME
+  return PLUGIN_NAME
 
 func get_visible_name():
-	return "Aseprite Spritesheet"
+  return "Aseprite Spritesheet"
 
 func get_recognized_extensions():
-	return ["json"]
+  return ["json"]
 
 func get_save_extension():
-	return "tres"
+  return "tres"
 
 func get_resource_type():
-	return "SpriteFrames"
+  return "SpriteFrames"
 
 func get_option_visibility(option, options):
-	return true
+  return true
 
 func get_preset_count():
-	return 1
+  return 1
 
 func get_preset_name(preset):
-	return "Default"
+  return "Default"
 
 func get_import_options(preset):
-	var options =  [
-		{
-			name = "sheet_image",
-			default_value = "",
-			property_hint = PROPERTY_HINT_FILE,
-			hint_string = "*.png",
-			#tooltip = "Absolute path to the spritesheet .png, if its path differs from the .json after stripping extensions.",
-		},
-		{
-			name = "post_script",
-			default_value = "",
-			property_hint = PROPERTY_HINT_FILE,
-			hint_string = "*.gd",
-			#tooltip = "Absolute path to a post script .gd file. The .gd file will have its post_import(scene) method called and is expected to return the changed scene.",
-		},
-		{
-			name = "autoplay_animation",
-			default_value = "",
-			#tooltip = "The name of the animation to autoplay on scene load.",
-		},
-	]
+  var options =  [
+    {
+      name = "sheet_image",
+      default_value = "",
+      property_hint = PROPERTY_HINT_FILE,
+      hint_string = "*.png",
+      #tooltip = "Absolute path to the spritesheet .png, if its path differs from the .json after stripping extensions.",
+    }
+  ]
 
-	return options
+  return options
 
 func import(src, target_path, import_options, r_platform_variants, r_gen_files):
-	var json_path = src
-	var texture_path = import_options.sheet_image
-	target_path = target_path + "." + get_save_extension()
-	var post_script_path = import_options.post_script
-	var autoplay_name = import_options.autoplay_animation
+  var json_path = src
+  var texture_path = import_options.sheet_image
+  target_path = target_path + "." + get_save_extension()
 
-	var file = File.new()
-	var error
-	if post_script_path != "":
-		error = file.open( post_script_path, File.READ )
-		if error != OK:
-			post_script_path = ""
-		file.close()
+  var file = File.new()
+  var error
+  error = file.open( json_path, File.READ )
+  if error != OK:
+    file.close()
+    print( str( ERRMSG_FILE_OPEN_STRF % ["JSON", json_path], ERRMSG_POSTCODE_STRF % error ))
+    return error
 
-	error = file.open( json_path, File.READ )
-	if error != OK:
-		file.close()
-		print( str( ERRMSG_FILE_OPEN_STRF % ["JSON", json_path], ERRMSG_POSTCODE_STRF % error ))
-		return error
+  var sheet = Sheet.new()
+  error = sheet.parse_json( file.get_as_text() )
+  file.close()
+  if error != OK:
+    print(str( ERRMSG_SHEET_PRETEXT_STRF % json_path, sheet.get_error_message(), ERRMSG_POSTCODE_STRF % error ))
+    return error
+  if not sheet.is_animations_enabled():
+    print( WARNMSG_ANIMATION_EXPORT_STRF % json_path )
 
-	var sheet = Sheet.new()
-	error = sheet.parse_json( file.get_as_text() )
-	file.close()
-	if error != OK:
-		print(str( ERRMSG_SHEET_PRETEXT_STRF % json_path, sheet.get_error_message(), ERRMSG_POSTCODE_STRF % error ))
-		return error
-	if not sheet.is_animations_enabled():
-		print( WARNMSG_ANIMATION_EXPORT_STRF % json_path )
+  if texture_path == "":
+    texture_path = json_path.get_basename() + ".png"
 
-	if texture_path == "":
-		texture_path = json_path.get_basename() + ".png"
+  if not file.file_exists( texture_path ):
+    print( ERRMSG_FILE_OPEN_STRF % ["texture", texture_path] )
+    return ERR_FILE_NOT_FOUND
+  var texture = load( texture_path )
+  if not typeof(texture) == TYPE_OBJECT or not texture is Texture:
+    print( ERRMSG_FILE_INVALID_STRF % [texture_path, "texture"] )
+    return ERR_INVALID_DATA
 
-	if not file.file_exists( texture_path ):
-		print( ERRMSG_FILE_OPEN_STRF % ["texture", texture_path] )
-		return ERR_FILE_NOT_FOUND
-	var texture = load( texture_path )
-	if not typeof(texture) == TYPE_OBJECT or not texture is Texture:
-		print( ERRMSG_FILE_INVALID_STRF % [texture_path, "texture"] )
-		return ERR_INVALID_DATA
-
-	var spriteFrame = SpriteFrames.new()
-	for animation_name in sheet.get_animation_names():
-		spriteFrame.add_animation(animation_name)
-		for frame in sheet.get_animation(animation_name):
-			var frameTexture = AtlasTexture.new()
-			frameTexture.set_atlas(texture)
-			frameTexture.set_region(frame.rect)
-			spriteFrame.add_frame(animation_name, frameTexture)
-	## This code is only useful if someone wishes to manually edit the .scn file in the .import directory, which is not recommended.
-	#	var scene
-	#
-	#	if file.file_exists( target_path ):
-	#		scene = load( target_path )
-	#		assert( scene is PackedScene )
-	#	else:
-	#	var packed_scene = PackedScene.new()
-	#
-	#	var sheet2scene = SheetToScene.new()
-	#	error = sheet2scene.merge( sheet, texture, packed_scene, post_script_path, autoplay_name )
-	#	if error != OK:
-	#		print( str( ERRMSG_MERGE_PRETEXT_STRF % target_path, sheet2scene.get_error_message(), ERRMSG_POSTCODE_STRF % error ))
-	#		return error
-
-	# Pour traduire : il faut que je parse le fichier pour y récupérer les choses suivantes :
-	# - Le nom du fichier image (actuellement je le récupère autrement mais ça me va pas)
-	# - La liste des frames et leur emplacement
-	# - Le nom des différentes animations
+  
+  var spriteFrame = SpriteFrames.new()
+  for animation_name in sheet.get_animation_names():
+    if !spriteFrame.has_animation(animation_name):
+      spriteFrame.add_animation(animation_name)
+      
+    for frame in sheet.get_animation(animation_name):
+      var frameTexture = AtlasTexture.new()
+      frameTexture.set_atlas(texture)
+      frameTexture.set_region(frame.rect)
+      spriteFrame.add_frame(animation_name, frameTexture)
 
 
+  error = ResourceSaver.save( target_path, spriteFrame )
+  if error != OK:
+    print( str( ERRMSG_SAVE_STRF % target_path, ERRMSG_POSTCODE_STRF % error ))
+    return ERR_INVALID_PARAMETER
 
-	error = ResourceSaver.save( target_path, spriteFrame )
-	if error != OK:
-		print( str( ERRMSG_SAVE_STRF % target_path, ERRMSG_POSTCODE_STRF % error ))
-		return ERR_INVALID_PARAMETER
-
-	return OK
+  return OK

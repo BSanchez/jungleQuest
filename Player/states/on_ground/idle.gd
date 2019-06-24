@@ -16,7 +16,8 @@ func _ready():
 
 func enter():
   animatedSprite.frame = 0
-  animatedSprite.play('idle')
+  animatedSprite.animation = 'idle'
+  animatedSprite.stop()
   owner.velocity.x = 0
   .enter()
 
@@ -38,6 +39,8 @@ func handle_event(event):
     emit_signal('request_transition', 'jump')
   if event.is_action_pressed('ui_left') || event.is_action_pressed('ui_right'):
     emit_signal('request_transition', 'run')
+  if event.is_action_pressed('ui_up') && owner.on_a_climbable:
+    emit_signal('request_transition', 'climb')
   .handle_event(event)
 
 func on_animation_finished(anim_name):
