@@ -1,8 +1,5 @@
 """
-# TODO ajouter le fait de grimper aux échèles
 # TODO ajouter un dash
-# TODO un stomp
-# TODO ajouter des particules au saut, plus une animation représentant le air jump
 # TODO ajouter du son spatialisé
 # TODO ajouter des récoltables
 # TODO ajouter une UI

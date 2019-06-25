@@ -1,6 +1,6 @@
 [remap]
 
-importer="bsanchez.aseprite_importer"
+importer="eska.aseprite_importer"
 type="SpriteFrames"
 path="res://.import/Pixel Jones.json-eb96cba8d73a5ae937afb087f9272820.tres"
 
@@ -12,3 +12,5 @@ dest_files=[ "res://.import/Pixel Jones.json-eb96cba8d73a5ae937afb087f9272820.tr
 [params]
 
 sheet_image=""
+post_script=""
+autoplay_animation=""

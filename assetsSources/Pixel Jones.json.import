@@ -1,0 +1,14 @@
+[remap]
+
+importer="bsanchez.aseprite_importer"
+type="SpriteFrames"
+path="res://.import/Pixel Jones.json-1be3b6a19ab7ef535ffe39a3fe93513d.tres"
+
+[deps]
+
+source_file="res://assetsSources/Pixel Jones.json"
+dest_files=[ "res://.import/Pixel Jones.json-1be3b6a19ab7ef535ffe39a3fe93513d.tres" ]
+
+[params]
+
+sheet_image=""

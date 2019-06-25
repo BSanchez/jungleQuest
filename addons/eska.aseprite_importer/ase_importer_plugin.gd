@@ -50,91 +50,91 @@ Enable Meta: Frame Tags in Aseprite's Export Sprite Sheet dialog to export frame
 const PLUGIN_NAME = "bsanchez.aseprite_importer"
 
 func get_importer_name():
-  return PLUGIN_NAME
+	return PLUGIN_NAME
 
 func get_visible_name():
-  return "Aseprite Spritesheet"
+	return "Aseprite Spritesheet"
 
 func get_recognized_extensions():
-  return ["json"]
+	return ["json"]
 
 func get_save_extension():
-  return "tres"
+	return "tres"
 
 func get_resource_type():
-  return "SpriteFrames"
+	return "SpriteFrames"
 
 func get_option_visibility(option, options):
-  return true
+	return true
 
 func get_preset_count():
-  return 1
+	return 1
 
 func get_preset_name(preset):
-  return "Default"
+	return "Default"
 
 func get_import_options(preset):
-  var options =  [
-    {
-      name = "sheet_image",
-      default_value = "",
-      property_hint = PROPERTY_HINT_FILE,
-      hint_string = "*.png",
-      #tooltip = "Absolute path to the spritesheet .png, if its path differs from the .json after stripping extensions.",
-    }
-  ]
+	var options =  [
+		{
+			name = "sheet_image",
+			default_value = "",
+			property_hint = PROPERTY_HINT_FILE,
+			hint_string = "*.png",
+			#tooltip = "Absolute path to the spritesheet .png, if its path differs from the .json after stripping extensions.",
+		}
+	]
 
-  return options
+	return options
 
 func import(src, target_path, import_options, r_platform_variants, r_gen_files):
-  var json_path = src
-  var texture_path = import_options.sheet_image
-  target_path = target_path + "." + get_save_extension()
+	var json_path = src
+	var texture_path = import_options.sheet_image
+	target_path = target_path + "." + get_save_extension()
 
-  var file = File.new()
-  var error
-  error = file.open( json_path, File.READ )
-  if error != OK:
-    file.close()
-    print( str( ERRMSG_FILE_OPEN_STRF % ["JSON", json_path], ERRMSG_POSTCODE_STRF % error ))
-    return error
+	var file = File.new()
+	var error
+	error = file.open( json_path, File.READ )
+	if error != OK:
+		file.close()
+		print( str( ERRMSG_FILE_OPEN_STRF % ["JSON", json_path], ERRMSG_POSTCODE_STRF % error ))
+		return error
 
-  var sheet = Sheet.new()
-  error = sheet.parse_json( file.get_as_text() )
-  file.close()
-  if error != OK:
-    print(str( ERRMSG_SHEET_PRETEXT_STRF % json_path, sheet.get_error_message(), ERRMSG_POSTCODE_STRF % error ))
-    return error
-  if not sheet.is_animations_enabled():
-    print( WARNMSG_ANIMATION_EXPORT_STRF % json_path )
+	var sheet = Sheet.new()
+	error = sheet.parse_json( file.get_as_text() )
+	file.close()
+	if error != OK:
+		print(str( ERRMSG_SHEET_PRETEXT_STRF % json_path, sheet.get_error_message(), ERRMSG_POSTCODE_STRF % error ))
+		return error
+	if not sheet.is_animations_enabled():
+		print( WARNMSG_ANIMATION_EXPORT_STRF % json_path )
 
-  if texture_path == "":
-    texture_path = json_path.get_basename() + ".png"
+	if texture_path == "":
+		texture_path = json_path.get_basename() + ".png"
 
-  if not file.file_exists( texture_path ):
-    print( ERRMSG_FILE_OPEN_STRF % ["texture", texture_path] )
-    return ERR_FILE_NOT_FOUND
-  var texture = load( texture_path )
-  if not typeof(texture) == TYPE_OBJECT or not texture is Texture:
-    print( ERRMSG_FILE_INVALID_STRF % [texture_path, "texture"] )
-    return ERR_INVALID_DATA
-
-  
-  var spriteFrame = SpriteFrames.new()
-  for animation_name in sheet.get_animation_names():
-    if !spriteFrame.has_animation(animation_name):
-      spriteFrame.add_animation(animation_name)
-      
-    for frame in sheet.get_animation(animation_name):
-      var frameTexture = AtlasTexture.new()
-      frameTexture.set_atlas(texture)
-      frameTexture.set_region(frame.rect)
-      spriteFrame.add_frame(animation_name, frameTexture)
+	if not file.file_exists( texture_path ):
+		print( ERRMSG_FILE_OPEN_STRF % ["texture", texture_path] )
+		return ERR_FILE_NOT_FOUND
+	var texture = load( texture_path )
+	if not typeof(texture) == TYPE_OBJECT or not texture is Texture:
+		print( ERRMSG_FILE_INVALID_STRF % [texture_path, "texture"] )
+		return ERR_INVALID_DATA
 
 
-  error = ResourceSaver.save( target_path, spriteFrame )
-  if error != OK:
-    print( str( ERRMSG_SAVE_STRF % target_path, ERRMSG_POSTCODE_STRF % error ))
-    return ERR_INVALID_PARAMETER
+	var spriteFrame = SpriteFrames.new()
+	for animation_name in sheet.get_animation_names():
+		if !spriteFrame.has_animation(animation_name):
+			spriteFrame.add_animation(animation_name)
 
-  return OK
+		for frame in sheet.get_animation(animation_name):
+			var frameTexture = AtlasTexture.new()
+			frameTexture.set_atlas(texture)
+			frameTexture.set_region(frame.rect)
+			spriteFrame.add_frame(animation_name, frameTexture)
+
+
+	error = ResourceSaver.save( target_path, spriteFrame )
+	if error != OK:
+		print( str( ERRMSG_SAVE_STRF % target_path, ERRMSG_POSTCODE_STRF % error ))
+		return ERR_INVALID_PARAMETER
+
+	return OK
