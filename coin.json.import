@@ -1,0 +1,14 @@
+[remap]
+
+importer="bsanchez.aseprite_importer"
+type="SpriteFrames"
+path="res://.import/coin.json-2a9026fc0d106ee0b991ccfa3b85f045.tres"
+
+[deps]
+
+source_file="res://coin.json"
+dest_files=[ "res://.import/coin.json-2a9026fc0d106ee0b991ccfa3b85f045.tres" ]
+
+[params]
+
+sheet_image=""
